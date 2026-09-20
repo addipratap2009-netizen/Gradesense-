@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GradeSense — Pitch Deck</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    --paper: #E9E5DA;
+    --paper-line: #d8d2c2;
+    --ink: #1F2937;
+    --ink-soft: #4b5262;
+    --navy: #1F2A44;
+    --red: #B23A2E;
+    --red-soft: #E8CFC8;
+    --gold: #C79A3D;
+    --ok: #3F6B4A;
+    --ok-bg: #E1EADD;
+    --card: #F5F2E9;
+    --border: #cfc8b6;
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html{scroll-padding-top:env(safe-area-inset-top,0px);}
+  html,body{height:100%;}
+  body{
+    margin:0; background:var(--navy); color:var(--ink);
+    font-family:'Inter',sans-serif; -webkit-font-smoothing:antialiased;
+    overflow:hidden;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:#1B1E22; --paper-line:#2a2e33; --ink:#ECE8DD; --ink-soft:#b9b4a6;
+      --card:#22262A; --border:#3a3e3f; --red-soft:#3a2724; --ok-bg:#223228;
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#1B1E22; --paper-line:#2a2e33; --ink:#ECE8DD; --ink-soft:#b9b4a6;
+    --card:#22262A; --border:#3a3e3f; --red-soft:#3a2724; --ok-bg:#223228;
+  }
+
+  .deck {
+    height:100%; width:100%;
+    display:flex; flex-direction:column;
+  }
+  .stage {
+    flex:1; position:relative; overflow:hidden;
+    background:var(--paper);
+  }
+  .slide {
+    position:absolute; inset:0;
+    display:flex; flex-direction:column; justify-content:center;
+    padding: 48px 9vw;
+    padding-top: calc(48px + env(safe-area-inset-top,0px));
+    opacity:0; visibility:hidden; transform:translateY(10px);
+    transition:opacity .28s ease, transform .28s ease;
+    background-image: repeating-linear-gradient(to bottom, transparent, transparent 37px, var(--paper-line) 38px);
+    background-position: 0 8px;
+  }
+  .slide.active { opacity:1; visibility:visible; transform:translateY(0); }
+
+  .eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--red); margin:0 0 14px; }
+  h1.big{
+    font-family:'Source Serif 4',serif; font-weight:700; letter-spacing:-0.01em;
+    font-size:clamp(30px,5.4vw,54px); line-height:1.08; margin:0 0 18px; max-width:16ch;
+  }
+  h1.big em{ font-style:normal; text-decoration:underline; text-decoration-color:var(--red); text-decoration-thickness:3px; text-underline-offset:6px; }
+  h2.title{
+    font-family:'Source Serif 4',serif; font-weight:600; letter-spacing:-0.01em;
+    font-size:clamp(24px,3.6vw,36px); margin:0 0 26px;
+  }
+  p.lead{ font-size:clamp(15px,1.6vw,19px); line-height:1.6; color:var(--ink-soft); max-width:60ch; margin:0 0 10px;}
+  .meta{ font-family:'IBM Plex Mono',monospace; font-size:13px; color:var(--ink-soft); margin-top:22px; }
+
+  .grid2{ display:grid; grid-template-columns:1fr 1fr; gap:20px; max-width:900px; }
+  @media (max-width:760px){ .grid2{ grid-template-columns:1fr; } }
+  .card{ background:var(--card); border:1px solid var(--border); border-radius:10px; padding:20px 22px; }
+  .card h3{ margin:0 0 8px; font-size:16px; font-weight:600; }
+  .card p{ margin:0; font-size:14px; color:var(--ink-soft); line-height:1.55; }
+
+  .flow-step{ display:flex; gap:18px; padding:16px 0; border-top:1px solid var(--border); max-width:760px; }
+  .flow-step:first-child{ border-top:none; }
+  .flow-index{ flex:none; font-family:'Source Serif 4',serif; font-size:22px; color:var(--red); width:36px; }
+  .flow-body h4{ margin:0 0 4px; font-size:15px; font-weight:600; }
+  .flow-body p{ margin:0; font-size:13.5px; color:var(--ink-soft); line-height:1.5; }
+
+  .pill-row{ display:flex; flex-wrap:wrap; gap:8px; max-width:760px; }
+  .pill{
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px;
+    border:1px solid var(--border); border-radius:20px; padding:6px 13px;
+    background:var(--card); color:var(--ink);
+  }
+
+  .tag-good{ display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11.5px; padding:3px 10px; border-radius:20px; background:var(--ok-bg); color:var(--ok); margin-bottom:16px; }
+
+  .links a{ color:var(--navy); font-weight:600; text-decoration:underline; text-decoration-color:var(--red); }
+
+  /* ---- controls ---- */
+  .bar{
+    background:var(--navy); color:#fff;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:12px 22px;
+    padding-bottom:calc(12px + env(safe-area-inset-bottom,0px));
+  }
+  .bar .brand{ font-family:'Source Serif 4',serif; font-size:15px; font-weight:600; display:flex; align-items:center; gap:8px;}
+  .bar .brand .mark{ width:20px; height:20px; border-radius:5px; background:#fff; color:var(--navy); display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; font-family:'Source Serif 4',serif; }
+  .bar .nav-controls{ display:flex; align-items:center; gap:14px; }
+  .bar button{
+    background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.25); color:#fff;
+    width:34px; height:34px; border-radius:8px; cursor:pointer; font-size:15px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .bar button:disabled{ opacity:.3; cursor:default; }
+  .bar .counter{ font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:rgba(255,255,255,.8); min-width:46px; text-align:center; }
+
+  @media (prefers-reduced-motion: reduce){ .slide{ transition:none; } }
+</style>
+</head>
+<body>
+<div class="deck">
+  <div class="stage" id="stage">
+
+    <section class="slide active" data-index="0">
+      <p class="eyebrow">HACK DEVENGERS 2.0 · SOLO SUBMISSION</p>
+      <h1 class="big">Grade in seconds, <em>not hours.</em></h1>
+      <p class="lead">GradeSense — an AI-powered grading assistant that turns a photo of a handwritten answer sheet into a structured, rubric-based score with real feedback.</p>
+      <p class="meta">Built by Aditya · September 2026</p>
+    </section>
+
+    <section class="slide" data-index="1">
+      <p class="eyebrow">THE PROBLEM</p>
+      <h2 class="title">Grading eats hours it shouldn't.</h2>
+      <p class="lead">Teachers grade 50–150 handwritten sheets per exam by hand — reading, comparing to the expected answer, scoring, and rarely finding time to explain why.</p>
+      <p class="lead">The result: slow turnaround, inconsistent marks, and students left with a number instead of feedback that helps them improve.</p>
+    </section>
+
+    <section class="slide" data-index="2">
+      <p class="eyebrow">THE SOLUTION</p>
+      <h2 class="title">Photo in, graded answer out.</h2>
+      <div class="grid2">
+        <div class="card">
+          <h3>What the teacher does</h3>
+          <p>Uploads a photo of the answer sheet and the rubric or model answer for that question.</p>
+        </div>
+        <div class="card">
+          <h3>What GradeSense does</h3>
+          <p>Reads the handwriting, checks it against the rubric concept-by-concept, and returns a score with specific per-question feedback.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide" data-index="3">
+      <p class="eyebrow">HOW IT WORKS</p>
+      <h2 class="title">Four steps, seconds not hours.</h2>
+      <div>
+        <div class="flow-step"><div class="flow-index">1</div><div class="flow-body"><h4>Upload the answer sheet</h4><p>Photo of the handwritten response + the rubric/model answer.</p></div></div>
+        <div class="flow-step"><div class="flow-index">2</div><div class="flow-body"><h4>OCR reads the handwriting</h4><p>Text is extracted, with low-confidence words flagged.</p></div></div>
+        <div class="flow-step"><div class="flow-index">3</div><div class="flow-body"><h4>Semantic grading</h4><p>Each rubric concept is checked for meaning, not exact wording.</p></div></div>
+        <div class="flow-step"><div class="flow-index">4</div><div class="flow-body"><h4>Teacher reviews & finalizes</h4><p>Score and feedback are proposed — the teacher stays in control.</p></div></div>
+      </div>
+    </section>
+
+    <section class="slide" data-index="4">
+      <p class="eyebrow">WHAT MAKES IT DIFFERENT</p>
+      <h2 class="title">A grading assistant, not a black box.</h2>
+      <div class="grid2">
+        <div class="card"><h3>Semantic, not keyword</h3><p>Recognizes a correct answer even when phrased differently from the model answer.</p></div>
+        <div class="card"><h3>Transparent feedback</h3><p>Explains why marks were given or deducted — not just a final number.</p></div>
+        <div class="card"><h3>Human-in-the-loop</h3><p>The AI proposes; the teacher always reviews and can override.</p></div>
+        <div class="card"><h3>Confidence flags</h3><p>Unclear handwriting is flagged for manual review, never silently guessed.</p></div>
+      </div>
+    </section>
+
+    <section class="slide" data-index="5">
+      <p class="eyebrow">TECH STACK</p>
+      <h2 class="title">Built to ship in 24 hours.</h2>
+      <div class="pill-row">
+        <span class="pill">React</span><span class="pill">Vite</span><span class="pill">Tailwind CSS</span>
+        <span class="pill">Node.js</span><span class="pill">Express</span>
+        <span class="pill">SQLite + Prisma</span>
+        <span class="pill">Google Cloud Vision (OCR)</span>
+        <span class="pill">LLM API (semantic grading)</span>
+        <span class="pill">Vercel</span><span class="pill">Render</span>
+      </div>
+    </section>
+
+    <section class="slide" data-index="6">
+      <p class="eyebrow">IMPACT & SCALABILITY</p>
+      <h2 class="title">Built for real classrooms.</h2>
+      <p class="lead">Cuts the repetitive first pass of grading, giving teachers time back and students more consistent, specific feedback than a bare score.</p>
+      <p class="lead">Next: multi-question batch grading, class-level topic-weakness dashboards, and support for coaching institutes grading at scale.</p>
+    </section>
+
+    <section class="slide" data-index="7">
+      <p class="eyebrow">TRY IT</p>
+      <h2 class="title">Thank you — links below.</h2>
+      <div class="links" style="font-size:15px; line-height:2.1;">
+        <p class="lead" style="margin-bottom:6px;">Live demo: gradesense (see submission form deployment link)</p>
+        <p class="lead" style="margin-bottom:0;">GitHub: see submission form repository link</p>
+      </div>
+      <p class="meta">GradeSense · Hack Devengers 2.0 · Built solo by Aditya</p>
+    </section>
+
+  </div>
+
+  <div class="bar">
+    <div class="brand"><span class="mark">G</span>GradeSense</div>
+    <div class="nav-controls">
+      <button id="prevBtn" aria-label="Previous slide">‹</button>
+      <span class="counter" id="counter">1 / 8</span>
+      <button id="nextBtn" aria-label="Next slide">›</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  const total = slides.length;
+  let idx = 0;
+  const counter = document.getElementById('counter');
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+
+  function show(i){
+    idx = Math.max(0, Math.min(total - 1, i));
+    slides.forEach((s, n) => s.classList.toggle('active', n === idx));
+    counter.textContent = (idx + 1) + ' / ' + total;
+    prevBtn.disabled = idx === 0;
+    nextBtn.disabled = idx === total - 1;
+  }
+
+  prevBtn.addEventListener('click', () => show(idx - 1));
+  nextBtn.addEventListener('click', () => show(idx + 1));
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { show(idx + 1); }
+    if (e.key === 'ArrowLeft') { show(idx - 1); }
+  });
+
+  let touchStartX = null;
+  document.getElementById('stage').addEventListener('touchstart', (e) => { touchStartX = e.touches[0].clientX; }, {passive:true});
+  document.getElementById('stage').addEventListener('touchend', (e) => {
+    if (touchStartX === null) return;
+    const dx = e.changedTouches[0].clientX - touchStartX;
+    if (dx > 40) show(idx - 1);
+    if (dx < -40) show(idx + 1);
+    touchStartX = null;
+  }, {passive:true});
+
+  show(0);
+})();
+</script>
+</body>
+</html>
