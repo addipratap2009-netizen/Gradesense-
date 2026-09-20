@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>GradeSense — Grade in seconds, not hours.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=IBM+Plex+Mono:wght@400;500&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+
+    --paper: #E9E5DA;
+    --paper-line: #d8d2c2;
+    --ink: #1F2937;
+    --ink-soft: #4b5262;
+    --navy: #1F2A44;
+    --navy-deep: #141B2E;
+    --red: #B23A2E;
+    --red-soft: #E8CFC8;
+    --gold: #C79A3D;
+    --ok: #3F6B4A;
+    --ok-bg: #E1EADD;
+    --card: #F5F2E9;
+    --border: #cfc8b6;
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #1B1E22;
+      --paper-line: #2a2e33;
+      --ink: #ECE8DD;
+      --ink-soft: #b9b4a6;
+      --card: #22262A;
+      --border: #3a3e3f;
+      --red-soft: #3a2724;
+      --ok-bg: #223228;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #1B1E22;
+    --paper-line: #2a2e33;
+    --ink: #ECE8DD;
+    --ink-soft: #b9b4a6;
+    --card: #22262A;
+    --border: #3a3e3f;
+    --red-soft: #3a2724;
+    --ok-bg: #223228;
+  }
+
+  a { color: inherit; }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+  /* ---------- NAV ---------- */
+  header.nav {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+    background: var(--paper);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 24px;
+  }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 17px; letter-spacing: -0.01em; }
+  .brand .mark {
+    width: 28px; height: 28px; border-radius: 6px;
+    background: var(--navy); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Source Serif 4', serif; font-weight: 700; font-size: 15px;
+  }
+  .nav a.cta {
+    font-size: 14px; font-weight: 600; text-decoration: none;
+    padding: 8px 16px; border-radius: 7px;
+    background: var(--navy); color: #fff;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    padding: 72px 0 56px;
+    background-image: repeating-linear-gradient(
+      to bottom, transparent, transparent 37px, var(--paper-line) 38px
+    );
+    background-position: 0 8px;
+    border-bottom: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute; left: 64px; top: 0; bottom: 0; width: 1px;
+    background: var(--red-soft);
+  }
+  .hero-inner { position: relative; padding-left: 24px; }
+  .kicker {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12.5px;
+    color: var(--red); font-weight: 500;
+    margin: 0 0 18px;
+  }
+  h1.headline {
+    font-family: 'Source Serif 4', serif;
+    font-size: clamp(34px, 6vw, 58px);
+    line-height: 1.06;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    margin: 0 0 22px;
+    max-width: 14ch;
+  }
+  h1.headline em {
+    font-style: normal;
+    text-decoration: underline;
+    text-decoration-color: var(--red);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 6px;
+  }
+  .hero p.lead {
+    font-size: 17px; line-height: 1.6; color: var(--ink-soft);
+    max-width: 46ch; margin: 0 0 30px;
+  }
+  .hero-cta { display: flex; gap: 14px; flex-wrap: wrap; }
+  .btn-primary, .btn-ghost {
+    font-family: 'Inter', sans-serif; font-weight: 600; font-size: 15px;
+    padding: 12px 22px; border-radius: 8px; border: 1px solid transparent;
+    cursor: pointer; text-decoration: none; display: inline-flex; align-items:center;
+  }
+  .btn-primary { background: var(--navy); color: #fff; }
+  .btn-ghost { background: transparent; border-color: var(--ink); color: var(--ink); }
+
+  /* ---------- SECTION shared ---------- */
+  section { padding: 64px 0; border-bottom: 1px solid var(--border); }
+  section:last-of-type { border-bottom: none; }
+  .section-head { max-width: 60ch; margin-bottom: 40px; }
+  .section-head .tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--red);
+    margin: 0 0 10px;
+  }
+  .section-head h2 {
+    font-family: 'Source Serif 4', serif; font-size: clamp(24px, 3.4vw, 32px);
+    margin: 0 0 12px; font-weight: 600; letter-spacing: -0.01em;
+  }
+  .section-head p { color: var(--ink-soft); line-height: 1.6; margin: 0; }
+
+  /* ---------- FEATURES ---------- */
+  .feature-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .feature {
+    background: var(--card); padding: 26px 22px;
+  }
+  .feature h3 {
+    font-size: 15.5px; font-weight: 600; margin: 0 0 8px;
+  }
+  .feature p { font-size: 14px; color: var(--ink-soft); line-height: 1.55; margin: 0; }
+  @media (max-width: 720px) { .feature-list { grid-template-columns: 1fr; } }
+
+  /* ---------- DEMO ---------- */
+  .demo-shell {
+    background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+    overflow: hidden;
+  }
+  .demo-toolbar {
+    display: flex; align-items: center; gap: 8px;
+    padding: 12px 16px; border-bottom: 1px solid var(--border);
+    font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--ink-soft);
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border); }
+  .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+  @media (max-width: 780px) { .demo-grid { grid-template-columns: 1fr; } }
+  .demo-col { padding: 24px; }
+  .demo-col + .demo-col { border-left: 1px solid var(--border); }
+  @media (max-width: 780px) { .demo-col + .demo-col { border-left: none; border-top: 1px solid var(--border); } }
+  .field-label {
+    display: block; font-size: 12.5px; font-weight: 600; text-transform: none;
+    color: var(--ink-soft); margin-bottom: 8px; letter-spacing: 0.01em;
+  }
+  textarea {
+    width: 100%; resize: vertical; min-height: 110px;
+    font-family: 'Inter', sans-serif; font-size: 14.5px; line-height: 1.55;
+    padding: 12px 13px; border-radius: 7px; border: 1px solid var(--border);
+    background: var(--paper); color: var(--ink);
+  }
+  textarea:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--navy); outline-offset: 2px; }
+  .field { margin-bottom: 16px; }
+  .grade-btn {
+    width: 100%; padding: 13px; border-radius: 8px; border: none;
+    background: var(--red); color: #fff; font-weight: 700; font-size: 15px;
+    cursor: pointer; font-family: 'Inter', sans-serif;
+  }
+  .grade-btn:disabled { opacity: .6; cursor: default; }
+  .hint { font-size: 12.5px; color: var(--ink-soft); margin-top: 8px; line-height: 1.5; }
+
+  .result-empty {
+    display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+    height: 100%; min-height: 220px; color: var(--ink-soft); font-size: 14px;
+  }
+  .result-empty .big { font-family: 'Source Serif 4', serif; font-size: 20px; color: var(--ink); margin-bottom: 6px; }
+
+  .score-row { display: flex; align-items: baseline; gap: 14px; margin-bottom: 18px; }
+  .score-num { font-family: 'Source Serif 4', serif; font-size: 44px; font-weight: 700; line-height: 1; }
+  .score-max { font-size: 16px; color: var(--ink-soft); }
+  .score-tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; padding: 3px 9px;
+    border-radius: 20px; font-weight: 500;
+  }
+  .score-tag.good { background: var(--ok-bg); color: var(--ok); }
+  .score-tag.warn { background: var(--red-soft); color: var(--red); }
+
+  .fb-item { display: flex; gap: 10px; padding: 10px 0; border-top: 1px solid var(--border); font-size: 13.8px; line-height: 1.55; }
+  .fb-item:first-of-type { border-top: none; }
+  .fb-mark { flex: none; width: 18px; height: 18px; border-radius: 50%; display:flex; align-items:center; justify-content:center; font-size: 11px; font-weight: 700; margin-top: 1px;}
+  .fb-mark.hit { background: var(--ok-bg); color: var(--ok); }
+  .fb-mark.miss { background: var(--red-soft); color: var(--red); }
+  .fb-text b { font-weight: 600; }
+
+  .demo-note {
+    padding: 14px 16px; border-top: 1px dashed var(--border);
+    font-size: 12.5px; color: var(--ink-soft); line-height: 1.5;
+    background: var(--paper);
+  }
+
+  /* ---------- FLOW ---------- */
+  .flow { display: flex; flex-direction: column; gap: 0; }
+  .flow-step { display: flex; gap: 20px; padding: 22px 0; border-top: 1px solid var(--border); }
+  .flow-step:first-child { border-top: none; }
+  .flow-index {
+    flex: none; font-family: 'Source Serif 4', serif; font-size: 26px; color: var(--red);
+    width: 44px;
+  }
+  .flow-body h4 { margin: 0 0 6px; font-size: 15.5px; font-weight: 600; }
+  .flow-body p { margin: 0; color: var(--ink-soft); font-size: 14px; line-height: 1.6; max-width: 56ch; }
+
+  footer {
+    padding: 32px 0 48px;
+    padding-bottom: calc(48px + env(safe-area-inset-bottom, 0px));
+    font-size: 13px; color: var(--ink-soft);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 10px;
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .result-panel { animation: rise .35s ease; }
+  }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <div class="brand"><span class="mark">G</span>GradeSense</div>
+    <a class="cta" href="#demo">Try the demo</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="wrap hero-inner">
+    <p class="kicker">HACK DEVENGERS 2.0 — LIVE PROTOTYPE</p>
+    <h1 class="headline">Grade in seconds, <em>not hours.</em></h1>
+    <p class="lead">GradeSense reads a handwritten answer against your rubric and hands back a score with real, specific feedback — so grading stops eating your evening.</p>
+    <div class="hero-cta">
+      <a class="btn-primary" href="#demo">Try the live demo →</a>
+      <a class="btn-ghost" href="#how">See how it works</a>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="tag">THE PROBLEM → THE FLOW</p>
+      <h2>One photo in, a graded answer out.</h2>
+      <p>Every stack of answer sheets follows the same four steps — GradeSense just does the slow parts for you.</p>
+    </div>
+    <div class="flow">
+      <div class="flow-step">
+        <div class="flow-index">1</div>
+        <div class="flow-body">
+          <h4>Upload the answer sheet</h4>
+          <p>A teacher photographs a student's handwritten response, along with the rubric or model answer for that question.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-index">2</div>
+        <div class="flow-body">
+          <h4>OCR reads the handwriting</h4>
+          <p>The image is converted to text, including flagging any words the model isn't confident about.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-index">3</div>
+        <div class="flow-body">
+          <h4>Semantic grading against the rubric</h4>
+          <p>Instead of matching exact words, the model checks whether each rubric concept was actually addressed — the way a human grader would.</p>
+        </div>
+      </div>
+      <div class="flow-step">
+        <div class="flow-index">4</div>
+        <div class="flow-body">
+          <h4>Teacher reviews, then finalizes</h4>
+          <p>The score and feedback are proposed, not final — the teacher can edit anything before it's recorded.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <p class="tag">FEATURES</p>
+      <h2>Built for the grading desk, not a lab demo.</h2>
+    </div>
+    <div class="feature-list">
+      <div class="feature">
+        <h3>Concept-level matching</h3>
+        <p>Recognizes a correct answer even when it's phrased nothing like the model answer.</p>
+      </div>
+      <div class="feature">
+        <h3>Per-question feedback</h3>
+        <p>Every mark comes with a reason — what was covered, and what was missing.</p>
+      </div>
+      <div class="feature">
+        <h3>Teacher override</h3>
+        <p>Every score is editable before it's saved. The model proposes; the teacher decides.</p>
+      </div>
+      <div class="feature">
+        <h3>Confidence flags</h3>
+        <p>Unclear handwriting is flagged for manual review instead of silently guessed.</p>
+      </div>
+      <div class="feature">
+        <h3>CSV export</h3>
+        <p>Finalized scores export in one click for the gradebook.</p>
+      </div>
+      <div class="feature">
+        <h3>Class-level insight</h3>
+        <p>See which concepts the whole class struggled with, not just individual scores.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo">
+  <div class="wrap">
+    <div class="section-head">
+      <p class="tag">TRY IT</p>
+      <h2>Grade an answer right now.</h2>
+      <p>Paste a rubric and a student's answer below — this runs the matching logic live, right in your browser.</p>
+    </div>
+
+    <div class="demo-shell">
+      <div class="demo-toolbar">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+        <span style="margin-left:6px;">gradesense · question-grader</span>
+      </div>
+      <div class="demo-grid">
+        <div class="demo-col">
+          <div class="field">
+            <label class="field-label" for="rubric">Rubric / model answer</label>
+            <textarea id="rubric">Photosynthesis converts sunlight, water, and carbon dioxide into glucose and oxygen. It occurs in the chloroplasts, mainly in the leaves. Chlorophyll absorbs light energy to drive the reaction.</textarea>
+          </div>
+          <div class="field">
+            <label class="field-label" for="answer">Student's answer (as read by OCR)</label>
+            <textarea id="answer">Plants use sunlight and water to make their own food. This process happens in the leaves and produces oxygen as well. The green pigment in leaves helps absorb the light needed for this.</textarea>
+          </div>
+          <button class="grade-btn" id="gradeBtn">Grade this answer</button>
+          <p class="hint">Try editing the student's answer — remove a concept, add wrong info, or leave it blank — and grade again to see the feedback change.</p>
+        </div>
+        <div class="demo-col" id="resultCol">
+          <div class="result-empty">
+            <div class="big">Awaiting a rubric and an answer</div>
+            <div>Your score and per-concept feedback will appear here.</div>
+          </div>
+        </div>
+      </div>
+      <div class="demo-note">This is a live in-browser prototype of the matching logic — it runs entirely on your device. The production version pairs Google Cloud Vision OCR with an LLM-based semantic grading engine on the backend for higher accuracy on real handwriting.</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap" style="width:100%; display:flex; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+    <span>GradeSense — built solo for Hack Devengers 2.0</span>
+    <span>Prototype demo · September 2026</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  const STOPWORDS = new Set(["the","a","an","and","or","of","to","in","on","for","is","are","was","were","it","its","this","that","as","by","with","at","from","be","which","their","also","into","used","use","uses","produces","produce","process","this,"]);
+
+  function tokenize(str){
+    return (str.toLowerCase().match(/[a-z]{3,}/g) || []).filter(w => !STOPWORDS.has(w));
+  }
+
+  function splitConcepts(rubric){
+    return rubric
+      .split(/[.;\n]/)
+      .map(s => s.trim())
+      .filter(s => s.length > 3);
+  }
+
+  function stem(word){
+    return word.replace(/(ing|ed|es|s)$/,'');
+  }
+
+  function conceptMatched(concept, answerTokens){
+    const conceptTokens = tokenize(concept);
+    if (conceptTokens.length === 0) return false;
+    const answerStems = new Set(answerTokens.map(stem));
+    let hits = 0;
+    conceptTokens.forEach(t => { if (answerStems.has(stem(t))) hits++; });
+    return hits / conceptTokens.length >= 0.34;
+  }
+
+  function grade(rubricText, answerText){
+    const concepts = splitConcepts(rubricText);
+    const answerTokens = tokenize(answerText);
+    const results = concepts.map(c => ({
+      concept: c,
+      matched: answerText.trim().length > 0 && conceptMatched(c, answerTokens)
+    }));
+    const matchedCount = results.filter(r => r.matched).length;
+    const pct = concepts.length ? Math.round((matchedCount / concepts.length) * 100) : 0;
+    return { results, pct, total: concepts.length, matchedCount };
+  }
+
+  function render(rubricText, answerText){
+    const col = document.getElementById('resultCol');
+    const rubric = rubricText.trim();
+    const answer = answerText.trim();
+
+    if (!rubric || !answer) {
+      col.innerHTML = '<div class="result-empty"><div class="big">Missing input</div><div>Add both a rubric and a student answer, then grade again.</div></div>';
+      return;
+    }
+
+    const { results, pct, total, matchedCount } = grade(rubric, answer);
+    const tagClass = pct >= 70 ? 'good' : 'warn';
+    const tagText = pct >= 70 ? 'Strong answer' : 'Needs review';
+
+    let feedbackHtml = results.map(r => {
+      const label = r.concept.length > 90 ? r.concept.slice(0,90) + '…' : r.concept;
+      if (r.matched) {
+        return '<div class="fb-item"><div class="fb-mark hit">✓</div><div class="fb-text"><b>Covered —</b> ' + escapeHtml(label) + '</div></div>';
+      }
+      return '<div class="fb-item"><div class="fb-mark miss">✕</div><div class="fb-text"><b>Missing —</b> ' + escapeHtml(label) + '</div></div>';
+    }).join('');
+
+    if (!feedbackHtml) {
+      feedbackHtml = '<div class="fb-item"><div class="fb-text">Add rubric points separated by periods or line breaks to see per-concept feedback.</div></div>';
+    }
+
+    col.innerHTML =
+      '<div class="result-panel">' +
+        '<div class="score-row">' +
+          '<div><span class="score-num">' + pct + '</span><span class="score-max">/100</span></div>' +
+          '<span class="score-tag ' + tagClass + '">' + tagText + '</span>' +
+        '</div>' +
+        '<div style="font-size:13px;color:var(--ink-soft);margin-bottom:14px;">' + matchedCount + ' of ' + total + ' rubric concepts addressed</div>' +
+        '<div>' + feedbackHtml + '</div>' +
+      '</div>';
+  }
+
+  function escapeHtml(str){
+    const d = document.createElement('div');
+    d.innerText = str;
+    return d.innerHTML;
+  }
+
+  const btn = document.getElementById('gradeBtn');
+  btn.addEventListener('click', function(){
+    render(document.getElementById('rubric').value, document.getElementById('answer').value);
+  });
+
+  // Auto-run once on load with the sample data so judges see it instantly.
+  render(document.getElementById('rubric').value, document.getElementById('answer').value);
+})();
+</script>
+
+</body>
+                                                   </html>
